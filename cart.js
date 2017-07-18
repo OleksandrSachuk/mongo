@@ -90,22 +90,16 @@ function CartDAO(database) {
 
 
       this.db.collection('cart')
-        .aggregate([
-          {$match: {userId: userId}},
-          // {$project: {userId: 1, items: 1}},
-          // {
-          //   $group: {
-          //     _id: {userId: '$userId'}
-          //   }
-          // },
-          // {$project: {_id: '$_id.category'}},
-          // {$sort: {_id: 1}}
-        ])
-        .findOne({'items._id': itemId}, function (err, item) {
-          assert.equal(null, err);
-          console.log(item);
-          callback(null);
-        });
+        // .findOne({userId: userId, 'items._id': { $elemMatch: itemId }}, function (err, item) {
+        //   assert.equal(null, err);
+        //   console.log(item);
+        //   callback(null);
+        // });
+      .findOne({$and: [{userId: userId}, {'items': { $elemMatch: {_id: itemId} }}]}, function (err, item) {
+        assert.equal(null, err);
+        console.log("myitem", item);
+        callback(itemId);
+      });
         // callback(null);
 
         // TODO-lab6 Replace all code above (in this method).
